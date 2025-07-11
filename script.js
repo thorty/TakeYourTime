@@ -290,6 +290,7 @@ class FocusApp {
     resetTimer() {
         this.timer.reset();
         this.updateTimerControls();
+        this.updateTimerDisplay();
     }
 
     setRandomProgressBarColor() {
@@ -319,6 +320,9 @@ class FocusApp {
         this.timerText.textContent = this.timer.getFormattedTime();
         this.progressFill.style.width = `${this.timer.getProgress()}%`;
         
+        // Update background based on timer mode
+        this.updateBackground();
+        
         // Update timer label and active todo display
         const activeTodo = this.todoManager.getActiveTodo();
         if (activeTodo) {
@@ -329,6 +333,15 @@ class FocusApp {
             this.timerLabel.style.display = 'block';
             this.timerLabel.textContent = this.timer.isFocusMode ? 'FOCUS TIME' : 'BREAK TIME';
             this.activeTodo.style.display = 'none';
+        }
+    }
+
+    updateBackground() {
+        const body = document.body;
+        if (this.timer.isFocusMode) {
+            body.classList.remove('break-mode');
+        } else {
+            body.classList.add('break-mode');
         }
     }
 

@@ -17,6 +17,11 @@ body {
     color: #2C3E50;
     overflow-x: hidden;
     line-height: 1.6;
+    transition: background-image 0.5s ease;
+}
+
+body.break-mode {
+    background-image: url('background_break.png');
 }
 
 /* Container */
