@@ -13,12 +13,12 @@
             <h1 class="title">⌛ TAKE YOUR TIME ⌛</h1>
             <div class="settings">
                 <label>
-                    Fokus-Zeit: 
+                    Focus Time: 
                     <input type="number" id="focusTime" min="1" max="120" value="25">
                     Min
                 </label>
                 <label>
-                    Pause-Zeit: 
+                    Break Time: 
                     <input type="number" id="breakTime" min="1" max="60" value="5">
                     Min
                 </label>
@@ -29,7 +29,10 @@
             <div class="timer-section">
                 <div class="timer-display">
                     <div class="timer-text" id="timerText">25:00</div>
-                    <div class="timer-label" id="timerLabel">FOKUS ZEIT</div>
+                    <div class="timer-label" id="timerLabel">FOCUS TIME</div>
+                    <div class="active-todo" id="activeTodo" style="display: none;">
+                        <div class="active-todo-text" id="activeTodoText"></div>
+                    </div>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -44,18 +47,20 @@
             <div class="todo-section">
                 <h2>📝 TODOS</h2>
                 <div class="todo-input">
-                    <input type="text" id="todoInput" placeholder="Neues Todo eingeben...">
+                    <input type="text" id="todoInput" placeholder="Enter new todo...">
                     <button id="addTodoBtn" class="btn btn-add">ADD</button>
+                    <button id="exportTodosBtn" class="btn btn-export">EXPORT</button>
+                    <button id="importTodosBtn" class="btn btn-import">IMPORT</button>
                 </div>
                 <div class="todo-list" id="todoList">
-                    <!-- Todos werden hier dynamisch eingefügt -->
+                    <!-- Todos will be dynamically inserted here -->
                 </div>
             </div>
         </main>
 
         <footer class="footer">
             <div class="motivation" id="motivationText">
-                💪 Bereit für produktives Arbeiten? Lass uns loslegen! 💪
+                💪 Ready for productive work? Let's get started! 💪
             </div>
         </footer>
     </div>

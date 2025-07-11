@@ -1,4 +1,6 @@
-#Title
+
+
+# Title
 Take Tine
 
 # Instruction
@@ -28,3 +30,12 @@ Entwickle mit eine schlanke Webapplikation.
 #####
 
 Das Design gefällt mir nicht so. Ich hätte gerne grobere Pixel in der Schrift und dem ganzen Artstyle
+
+######
+
+ok das tut aber in den augen weh. bitte aufgeräumter, kleinere schrift, weniger effekte auf der schrift, flatdesign und ein einfarbiger hintergrund in pastellblau
+
+#####
+uhr größer, alles auf english, die weissen rahmen etwas weniger breit und transparent statt weiss
+
+set background.png as background image in fullscreen.

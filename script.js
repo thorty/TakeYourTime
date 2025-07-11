@@ -77,11 +77,21 @@ class TodoManager {
     constructor() {
         this.todos = this.loadTodos();
         this.activeTodoId = this.loadActiveTodoId();
+        this.nextId = this.getNextId();
+    }
+
+    getNextId() {
+        // Find the highest existing ID and add 1, or use current timestamp if no todos exist
+        if (this.todos.length === 0) {
+            return Date.now();
+        }
+        const maxId = Math.max(...this.todos.map(todo => todo.id));
+        return Math.max(maxId + 1, Date.now());
     }
 
     addTodo(text) {
         const todo = {
-            id: Date.now(),
+            id: this.nextId++,
             text: text.trim(),
             completed: false,
             createdAt: new Date()
@@ -111,6 +121,14 @@ class TodoManager {
 
     getAllTodos() {
         return this.todos;
+    }
+
+    clearAllTodos() {
+        this.todos = [];
+        this.activeTodoId = null;
+        this.nextId = Date.now();
+        this.saveTodos();
+        this.saveActiveTodoId();
     }
 
     saveTodos() {
@@ -178,6 +196,8 @@ class FocusApp {
         // Timer Elements
         this.timerText = document.getElementById('timerText');
         this.timerLabel = document.getElementById('timerLabel');
+        this.activeTodo = document.getElementById('activeTodo');
+        this.activeTodoText = document.getElementById('activeTodoText');
         this.progressFill = document.getElementById('progressFill');
         this.startBtn = document.getElementById('startBtn');
         this.pauseBtn = document.getElementById('pauseBtn');
@@ -190,6 +210,8 @@ class FocusApp {
         // Todo Elements
         this.todoInput = document.getElementById('todoInput');
         this.addTodoBtn = document.getElementById('addTodoBtn');
+        this.exportTodosBtn = document.getElementById('exportTodosBtn');
+        this.importTodosBtn = document.getElementById('importTodosBtn');
         this.todoList = document.getElementById('todoList');
         
         // Motivation Element
@@ -212,6 +234,8 @@ class FocusApp {
         
         // Todo Management
         this.addTodoBtn.addEventListener('click', () => this.addTodo());
+        this.exportTodosBtn.addEventListener('click', () => this.exportTodos());
+        this.importTodosBtn.addEventListener('click', () => this.importTodos());
         this.todoInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.addTodo();
@@ -254,6 +278,7 @@ class FocusApp {
 
     startTimer() {
         this.timer.start();
+        this.setRandomProgressBarColor();
         this.updateTimerControls();
     }
 
@@ -267,6 +292,24 @@ class FocusApp {
         this.updateTimerControls();
     }
 
+    setRandomProgressBarColor() {
+        const colors = [
+            ['#FF6B6B', '#E55353'], // Coral Red
+            ['#4ECDC4', '#45B7AA'], // Turquoise
+            ['#45B7D1', '#3A9BC1'], // Sky Blue
+            ['#96CEB4', '#7FB69A'], // Mint Green
+            ['#FFEAA7', '#F1C40F'], // Sunny Yellow
+            ['#DDA0DD', '#C39BD3'], // Plum
+            ['#FFB347', '#FF9A3C'], // Peach
+            ['#87CEEB', '#6BB6D6'], // Light Sky Blue
+            ['#98D8C8', '#7FCABC'], // Mint
+            ['#FFA07A', '#FF8C69']  // Light Salmon
+        ];
+        
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        this.progressFill.style.background = `linear-gradient(90deg, ${randomColor[0]}, ${randomColor[1]})`;
+    }
+
     updateTimerControls() {
         this.startBtn.disabled = this.timer.isRunning;
         this.pauseBtn.disabled = !this.timer.isRunning;
@@ -274,8 +317,19 @@ class FocusApp {
 
     updateTimerDisplay() {
         this.timerText.textContent = this.timer.getFormattedTime();
-        this.timerLabel.textContent = this.timer.isFocusMode ? 'FOKUS ZEIT' : 'PAUSE ZEIT';
         this.progressFill.style.width = `${this.timer.getProgress()}%`;
+        
+        // Update timer label and active todo display
+        const activeTodo = this.todoManager.getActiveTodo();
+        if (activeTodo) {
+            this.timerLabel.style.display = 'none';
+            this.activeTodo.style.display = 'block';
+            this.activeTodoText.textContent = `🎯 ${activeTodo.text}`;
+        } else {
+            this.timerLabel.style.display = 'block';
+            this.timerLabel.textContent = this.timer.isFocusMode ? 'FOCUS TIME' : 'BREAK TIME';
+            this.activeTodo.style.display = 'none';
+        }
     }
 
     handleTimerComplete() {
@@ -284,8 +338,8 @@ class FocusApp {
         
         // Zeige Benachrichtigung
         const message = this.timer.isFocusMode ? 
-            '🎉 Pause ist vorbei! Zurück an die Arbeit!' : 
-            '⏰ Fokus-Zeit ist um! Zeit für eine Pause!';
+            '🎉 Break is over! Back to work!' : 
+            '⏰ Focus time is up! Time for a break!';
         
         this.showNotification(message);
         
@@ -299,14 +353,14 @@ class FocusApp {
     showNotification(message) {
         if ('Notification' in window) {
             if (Notification.permission === 'granted') {
-                new Notification('Vibe Coding App', {
+                new Notification('Time Taker', {
                     body: message,
                     icon: '🎯'
                 });
             } else if (Notification.permission !== 'denied') {
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                        new Notification('Vibe Coding App', {
+                        new Notification('Time Taker', {
                             body: message,
                             icon: '🎯'
                         });
@@ -358,6 +412,152 @@ class FocusApp {
     setActiveTodo(id) {
         this.todoManager.setActiveTodo(id);
         this.updateTodoList();
+        this.updateTimerDisplay();
+    }
+
+    deactivateTodo() {
+        this.todoManager.setActiveTodo(null);
+        this.updateTodoList();
+        this.updateTimerDisplay();
+    }
+
+    exportTodos() {
+        const todos = this.todoManager.getAllTodos();
+        
+        if (todos.length === 0) {
+            alert('No todos to export!');
+            return;
+        }
+        
+        // Create simple markdown content with just the todos
+        let markdownContent = '';
+        todos.forEach(todo => {
+            markdownContent += `- ${todo.text}\n`;
+        });
+        
+        // Create and download file
+        const blob = new Blob([markdownContent], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `todos-${new Date().toISOString().split('T')[0]}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show success message
+        alert(`Successfully exported ${todos.length} todos to markdown file!`);
+    }
+
+    importTodos() {
+        // Create file input element
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.md,.txt';
+        fileInput.style.display = 'none';
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                this.parseAndImportTodos(content);
+            };
+            reader.readAsText(file);
+        });
+        
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
+    }
+
+    parseAndImportTodos(content) {
+        const lines = content.split('\n');
+        const todos = [];
+        
+        // Parse content to extract todos
+        lines.forEach(line => {
+            const trimmedLine = line.trim();
+            
+            // Skip empty lines and lines that look like metadata
+            if (!trimmedLine || 
+                trimmedLine.startsWith('#') || 
+                trimmedLine.startsWith('*') || 
+                trimmedLine.startsWith('---') ||
+                trimmedLine.toLowerCase().includes('exported') ||
+                trimmedLine.toLowerCase().includes('generated') ||
+                trimmedLine.toLowerCase().includes('total todos')) {
+                return;
+            }
+            
+            // Match bullet points (- Todo text)
+            const bulletMatch = trimmedLine.match(/^-\s+(.+)$/);
+            if (bulletMatch) {
+                const todoText = bulletMatch[1].trim();
+                // Remove any markdown formatting like **bold** or emojis at the start
+                const cleanText = todoText.replace(/^\*\*|\*\*$/g, '').replace(/^🎯\s+/, '').replace(/\s+⭐$/, '');
+                if (cleanText) {
+                    todos.push(cleanText);
+                }
+                return;
+            }
+            
+            // Match numbered list items (1. Todo text)
+            const numberedMatch = trimmedLine.match(/^\d+\.\s+(.+)$/);
+            if (numberedMatch) {
+                const todoText = numberedMatch[1].trim();
+                // Remove any markdown formatting and indicators
+                const cleanText = todoText.replace(/^\*\*|\*\*$/g, '').replace(/^🎯\s+/, '').replace(/\s+⭐$/, '');
+                if (cleanText) {
+                    todos.push(cleanText);
+                }
+                return;
+            }
+            
+            // If it's just plain text that doesn't look like metadata, treat it as a todo
+            if (trimmedLine.length > 0 && 
+                !trimmedLine.match(/^(todo|list|export|import|generated|total|currently|active)/i)) {
+                todos.push(trimmedLine);
+            }
+        });
+        
+        if (todos.length === 0) {
+            alert('No todos found in the file! Please make sure your file contains todos in bullet points (- Todo text) or numbered lists (1. Todo text).');
+            return;
+        }
+        
+        // Ask user if they want to replace existing todos or append
+        const existingTodos = this.todoManager.getAllTodos();
+        let shouldReplace = false;
+        
+        if (existingTodos.length > 0) {
+            shouldReplace = confirm(`You have ${existingTodos.length} existing todos. Click OK to replace them, or Cancel to add the imported todos to your existing list.`);
+        }
+        
+        if (shouldReplace) {
+            // Clear existing todos
+            this.todoManager.clearAllTodos();
+        }
+        
+        // Add imported todos
+        let importedCount = 0;
+        todos.forEach(todoText => {
+            if (todoText.length > 0) {
+                this.todoManager.addTodo(todoText);
+                importedCount++;
+            }
+        });
+        
+        // Update display
+        this.updateTodoList();
+        this.updateActiveTodoDisplay();
+        
+        // Show success message
+        const action = shouldReplace ? 'replaced' : 'imported';
+        alert(`Successfully ${action} ${importedCount} todos!`);
     }
 
     updateTodoList() {
@@ -385,8 +585,9 @@ class FocusApp {
         todoElement.innerHTML = `
             <span class="todo-text">${todo.text}</span>
             <div class="todo-actions">
-                ${!isActive ? `<button class="todo-btn activate" onclick="app.setActiveTodo(${todo.id})">Aktiv</button>` : ''}
-                <button class="todo-btn delete" onclick="app.deleteTodo(${todo.id})">Löschen</button>
+                ${!isActive ? `<button class="todo-btn activate" onclick="app.setActiveTodo(${todo.id})">Active</button>` : 
+                              `<button class="todo-btn deactivate" onclick="app.deactivateTodo()">Deactivate</button>`}
+                <button class="todo-btn delete" onclick="app.deleteTodo(${todo.id})">Delete</button>
             </div>
         `;
         

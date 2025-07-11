@@ -8,6 +8,11 @@
 body {
     font-family: 'Press Start 2P', monospace;
     background: #B8D4F0;
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     min-height: 100vh;
     color: #2C3E50;
     overflow-x: hidden;
@@ -28,10 +33,12 @@ body {
 .header {
     text-align: center;
     margin-bottom: 30px;
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.6);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .title {
@@ -60,9 +67,9 @@ body {
 .settings input {
     padding: 8px 12px;
     font-size: 10px;
-    border: 2px solid #D5E8F7;
+    border: 1px solid rgba(213, 232, 247, 0.4);
     border-radius: 6px;
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.7);
     color: #2C3E50;
     font-family: 'Press Start 2P', monospace;
     font-weight: normal;
@@ -72,8 +79,8 @@ body {
 
 .settings input:focus {
     outline: none;
-    border-color: #7FB3D3;
-    box-shadow: 0 0 0 3px rgba(127, 179, 211, 0.2);
+    border-color: rgba(127, 179, 211, 0.6);
+    box-shadow: 0 0 0 2px rgba(127, 179, 211, 0.15);
 }
 
 /* Main Content */
@@ -86,12 +93,14 @@ body {
 
 /* Timer Section */
 .timer-section {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.6);
     padding: 30px;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .timer-display {
@@ -99,7 +108,7 @@ body {
 }
 
 .timer-text {
-    font-size: 36px;
+    font-size: 48px;
     font-weight: normal;
     margin-bottom: 15px;
     color: #2C3E50;
@@ -111,14 +120,35 @@ body {
     color: #7FB3D3;
 }
 
+.active-todo {
+    margin-top: 20px;
+    padding: 15px;
+}
+
+.active-todo-text {
+    font-size: 12px;
+    font-weight: normal;
+    color: #2C3E50;
+    line-height: 1.4;
+}
+
+.btn-deactivate {
+    background: #95A5A6;
+    color: #FFFFFF;
+    padding: 8px 12px;
+    font-size: 8px;
+    min-width: 80px;
+}
+
 .progress-bar {
     width: 100%;
     height: 20px;
-    background: #E8F4F8;
+    background: rgba(232, 244, 248, 0.6);
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 30px;
     position: relative;
+    border: 1px solid rgba(213, 232, 247, 0.4);
 }
 
 .progress-fill {
@@ -127,6 +157,7 @@ body {
     width: 0%;
     transition: width 1s ease;
     border-radius: 10px;
+    position: relative;
 }
 
 .timer-controls {
@@ -188,13 +219,29 @@ body {
     font-size: 10px;
 }
 
+.btn-export {
+    background: #9B59B6;
+    color: #FFFFFF;
+    padding: 10px 16px;
+    font-size: 10px;
+}
+
+.btn-import {
+    background: #34495E;
+    color: #FFFFFF;
+    padding: 10px 16px;
+    font-size: 10px;
+}
+
 /* Todo Section */
 .todo-section {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.6);
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .todo-section h2 {
@@ -216,9 +263,9 @@ body {
     flex: 1;
     padding: 12px 15px;
     font-size: 10px;
-    border: 2px solid #D5E8F7;
+    border: 1px solid rgba(213, 232, 247, 0.4);
     border-radius: 8px;
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.7);
     color: #2C3E50;
     font-family: 'Press Start 2P', monospace;
     font-weight: normal;
@@ -231,8 +278,8 @@ body {
 
 .todo-input input:focus {
     outline: none;
-    border-color: #7FB3D3;
-    box-shadow: 0 0 0 3px rgba(127, 179, 211, 0.2);
+    border-color: rgba(127, 179, 211, 0.6);
+    box-shadow: 0 0 0 2px rgba(127, 179, 211, 0.15);
 }
 
 .todo-list {
@@ -242,28 +289,29 @@ body {
 }
 
 .todo-item {
-    background: #F8FBFF;
+    background: rgba(248, 251, 255, 0.6);
     padding: 15px;
     border-radius: 8px;
-    border: 2px solid #E8F4F8;
+    border: 1px solid rgba(232, 244, 248, 0.4);
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: all 0.2s ease;
     flex-wrap: wrap;
     gap: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .todo-item:hover {
-    background: #E8F4F8;
+    background: rgba(232, 244, 248, 0.7);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .todo-item.active {
-    background: #D5E8F7;
-    border-color: #7FB3D3;
-    box-shadow: 0 0 0 3px rgba(127, 179, 211, 0.2);
+    background: rgba(213, 232, 247, 0.7);
+    border-color: rgba(127, 179, 211, 0.6);
+    box-shadow: 0 0 0 2px rgba(127, 179, 211, 0.15);
 }
 
 .todo-text {
@@ -302,6 +350,11 @@ body {
     color: #FFFFFF;
 }
 
+.todo-btn.deactivate {
+    background: #95A5A6;
+    color: #FFFFFF;
+}
+
 .todo-btn.delete {
     background: #E74C3C;
     color: #FFFFFF;
@@ -309,11 +362,13 @@ body {
 
 /* Footer */
 .footer {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.6);
     padding: 20px;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .motivation {
@@ -362,7 +417,7 @@ body {
     }
     
     .timer-text {
-        font-size: 28px;
+        font-size: 40px;
     }
     
     .timer-label {
@@ -395,7 +450,7 @@ body {
     }
     
     .timer-text {
-        font-size: 24px;
+        font-size: 36px;
     }
     
     .timer-label {
@@ -408,5 +463,9 @@ body {
     
     .motivation {
         font-size: 9px;
+    }
+    
+    .active-todo-text {
+        font-size: 10px;
     }
 }
