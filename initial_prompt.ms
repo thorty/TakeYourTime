@@ -1,4 +1,5 @@
-Vibe Coding App:
+#Title
+Take Tine
 
 # Instruction
 Entwickle mit eine schlanke Webapplikation. 
@@ -24,3 +25,6 @@ Entwickle mit eine schlanke Webapplikation.
 - Alles in knallige Farben. 
 - Ganz unten soll eine Liste an motiviernden sprüchen dargestellt werden.
 
+#####
+
+Das Design gefällt mir nicht so. Ich hätte gerne grobere Pixel in der Schrift und dem ganzen Artstyle

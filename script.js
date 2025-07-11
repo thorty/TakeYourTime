@@ -135,21 +135,16 @@ class TodoManager {
 class MotivationManager {
     constructor() {
         this.motivationalQuotes = [
-            "💪 Bereit für produktives Arbeiten? Lass uns loslegen! 💪",
-            "🚀 Fokus ist der Schlüssel zum Erfolg! 🚀",
-            "⚡ Jede Minute zählt - mach das Beste daraus! ⚡",
-            "🎯 Bleib dran, du schaffst das! 🎯",
-            "🌟 Großartige Dinge entstehen durch kleine Schritte! 🌟",
-            "🔥 Deine Konzentration ist deine Superkraft! 🔥",
-            "💎 Qualität braucht Zeit und Fokus! 💎",
-            "🏆 Erfolg ist kein Zufall - es ist harte Arbeit! 🏆",
-            "🌈 Nach dem Fokus kommt die Belohnung! 🌈",
-            "⭐ Du bist stärker als deine Ablenkungen! ⭐",
-            "🎪 Mach aus deiner Arbeit ein Erlebnis! 🎪",
-            "🎨 Kreativität braucht Konzentration! 🎨",
-            "🚂 Bleib auf der Erfolgsspur! 🚂",
-            "🌺 Wachstum passiert außerhalb der Komfortzone! 🌺",
-            "🎵 Finde deinen Arbeitsrhythmus! 🎵"
+            "💪 Ready for productive work? Let's get started! 💪",
+            "🚀 Focus is the key to success! 🚀",            
+            "🎯 Stay focused, you've got this! 🎯",
+            "🌟 Great things happen through small steps! 🌟",
+            "🔥 Your concentration is your superpower! 🔥",
+            "💎 Quality takes time and focus! 💎",            
+            "🌈 After focus comes the reward! 🌈",
+            "⭐ You are stronger than your distractions! ⭐",            
+            "🎨 Creativity requires concentration! 🎨",                        
+            "🎵 Find your work rhythm! 🎵"
         ];
         this.currentQuoteIndex = 0;
     }
